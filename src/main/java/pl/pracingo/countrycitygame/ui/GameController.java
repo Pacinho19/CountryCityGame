@@ -94,6 +94,7 @@ public class GameController {
                               Model model,
                               @PathVariable(value = "gameId") String gameId) {
         model.addAttribute("game", gameService.findDtoById(gameId, authentication.getName()));
+        model.addAttribute("categories", Category.getCategoriesNames());
         return "fragments/board :: boardFrag";
     }
 }

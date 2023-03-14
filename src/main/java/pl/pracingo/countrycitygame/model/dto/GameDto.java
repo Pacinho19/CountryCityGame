@@ -19,4 +19,5 @@ public class GameDto {
     private LocalDateTime startTime;
     private int playersCount;
     private Character currentLetter;
+    private List<RoundResultDto> roundResults;
 }

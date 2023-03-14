@@ -10,10 +10,11 @@ public class GameDtoMapper {
         return GameDto.builder()
                 .id(game.getId())
                 .startTime(game.getStartTime())
-                .players(game.getPlayers().stream().map(Player::getName).toList())
+                .players(game.getPlayers().stream().map(Player::getName).sorted().toList())
                 .status(game.getStatus())
                 .playersCount(game.getPlayersCount())
                 .currentLetter(game.getLetter())
+                .roundResults(game.getResults())
                 .build();
     }
 }
