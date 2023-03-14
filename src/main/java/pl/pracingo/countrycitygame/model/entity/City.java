@@ -13,18 +13,18 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Country extends MyEntity {
+public class City extends MyEntity {
 
     @Id
-    @GenericGenerator(name = "countryIdGen", strategy = "increment")
-    @GeneratedValue(generator = "countryIdGen")
+    @GenericGenerator(name = "cityIdGen", strategy = "increment")
+    @GeneratedValue(generator = "cityIdGen")
     private Long id;
 
     private String uuid;
 
     private String name;
 
-    public Country(String name) {
+    public City(String name) {
         this.name = name.toUpperCase();
         this.uuid = UUID.randomUUID().toString();
     }

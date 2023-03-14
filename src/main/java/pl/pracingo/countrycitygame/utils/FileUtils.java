@@ -18,7 +18,7 @@ public class FileUtils {
     public static List<String> readTxt(File file) {
         List<String> out = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(
-                new InputStreamReader(new FileInputStream(file), "Windows1250"))) {
+                new InputStreamReader(new FileInputStream(file), "Cp1250"))) {
             String line = "";
             while ((line = br.readLine()) != null) {
                 out.add(line);

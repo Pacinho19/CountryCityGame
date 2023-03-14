@@ -3,6 +3,7 @@ package pl.pracingo.countrycitygame.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,11 +39,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().disable()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers(UIConfig.PREFIX).permitAll()
-                .antMatchers(UIConfig.GAMES).permitAll()
+                .antMatchers(EndpointsConfig.PREFIX).permitAll()
+                .antMatchers(EndpointsConfig.GAMES).permitAll()
+                .antMatchers(EndpointsConfig.API_PREFIX + "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin();
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring()
+                .antMatchers(
+                        "/v2/api-docs",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui/**",
+                        "/swagger-ui",
+                        "/swagger-ui/",
+                        "/swagger-ui.html",
+                        "/swagger-ui.html/index.html",
+                        "/webjars/**"
+                );
     }
 
     @Bean

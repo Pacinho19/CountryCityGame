@@ -5,5 +5,6 @@ import pl.pracingo.countrycitygame.model.entity.City;
 import pl.pracingo.countrycitygame.repository.CityRepository;
 
 @Service
-public class CountryService extends SimpleParamService<City, CityRepository> {
+public class CityService extends SimpleParamService<City, CityRepository> {
+
 }
