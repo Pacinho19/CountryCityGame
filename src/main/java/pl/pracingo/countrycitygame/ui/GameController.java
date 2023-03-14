@@ -1,11 +1,13 @@
 package pl.pracingo.countrycitygame.ui;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.pracingo.countrycitygame.config.EndpointsConfig;
+import pl.pracingo.countrycitygame.model.dto.AnswerDto;
 import pl.pracingo.countrycitygame.model.dto.GameDto;
 import pl.pracingo.countrycitygame.model.enums.Category;
 import pl.pracingo.countrycitygame.model.enums.GameStatus;
@@ -73,6 +75,14 @@ public class GameController {
                            Authentication authentication) {
         model.addAttribute("game", gameService.findDtoById(gameId, authentication.getName()));
         model.addAttribute("categories", Category.getCategoriesNames());
+        model.addAttribute("answerDto", new AnswerDto());
         return "game";
+    }
+
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PostMapping(EndpointsConfig.UI_GAME_ANSWER)
+    public void answer(Authentication authentication,
+                       @PathVariable(value = "gameId") String gameId,
+                       AnswerDto answerDto) {
     }
 }

@@ -15,4 +15,5 @@ public class EndpointsConfig {
     public static final String UI_GAME_PAGE = UI_GAMES + "/{gameId}";
     public static final String UI_GAME_ROOM = UI_GAME_PAGE + "/room";
     public static final String UI_GAME_ROOM_PLAYERS = UI_GAME_ROOM + "/players";
+    public static final String UI_GAME_ANSWER = UI_GAME_PAGE + "/answer";
 }
