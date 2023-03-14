@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.pracingo.countrycitygame.config.EndpointsConfig;
 import pl.pracingo.countrycitygame.model.dto.GameDto;
+import pl.pracingo.countrycitygame.model.enums.Category;
 import pl.pracingo.countrycitygame.model.enums.GameStatus;
 import pl.pracingo.countrycitygame.service.game.GameService;
 
@@ -64,5 +65,14 @@ public class GameController {
         GameDto game = gameService.findDtoById(gameId, authentication.getName());
         model.addAttribute("game", game);
         return "fragments/game-players :: gamePlayersFrag";
+    }
+
+    @GetMapping(EndpointsConfig.UI_GAME_PAGE)
+    public String gamePage(@PathVariable(value = "gameId") String gameId,
+                           Model model,
+                           Authentication authentication) {
+        model.addAttribute("game", gameService.findDtoById(gameId, authentication.getName()));
+        model.addAttribute("categories", Category.getCategoriesNames());
+        return "game";
     }
 }

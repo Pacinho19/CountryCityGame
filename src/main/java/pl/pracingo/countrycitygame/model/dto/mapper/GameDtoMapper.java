@@ -13,6 +13,7 @@ public class GameDtoMapper {
                 .players(game.getPlayers().stream().map(Player::getName).toList())
                 .status(game.getStatus())
                 .playersCount(game.getPlayersCount())
+                .currentLetter(game.getLetter())
                 .build();
     }
 }

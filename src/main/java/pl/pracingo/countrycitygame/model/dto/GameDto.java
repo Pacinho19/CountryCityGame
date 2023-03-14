@@ -19,6 +19,7 @@ public class GameDto {
     private LocalDateTime startTime;
     private int playersCount;
     private Integer playerIndex;
+    private Character currentLetter;
 
     public int getNextPlayer(int offset) {
         int idx = playerIndex + offset;

@@ -25,7 +25,7 @@ public class GameService {
         List<GameDto> activeGames = getAvailableGames();
         if (activeGames.size() >= 10)
             throw new IllegalStateException("Cannot create new Game! Active game count : " + activeGames.size());
-        return gameRepository.newGame(name,playersCount);
+        return gameRepository.newGame(name, playersCount);
     }
 
     public GameDto findDtoById(String gameId, String name) {
@@ -39,7 +39,12 @@ public class GameService {
 
     public boolean checkStartGame(String gameId) {
         Game game = gameLogicService.findById(gameId);
-        return game.getPlayers().size() == game.getPlayersCount();
+        boolean startGame = game.getPlayers().size() == game.getPlayersCount();
+
+        if (startGame)
+            game.setLetter(gameLogicService.drawLetter(game.getUsedLetters()));
+
+        return startGame;
     }
 
     public boolean canJoin(GameDto game, String name) {
