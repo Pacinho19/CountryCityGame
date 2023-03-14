@@ -2,6 +2,7 @@ package pl.pracingo.countrycitygame.model.entity.memory;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.pracingo.countrycitygame.model.dto.RoundResultDto;
 import pl.pracingo.countrycitygame.model.enums.GameStatus;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,9 @@ public class Game {
     private Character letter;
     private List<Character> usedLetters;
 
+    private Map<Character, List<Answer>> answers;
+    private List<RoundResultDto> results;
+
     public Game(String player1, int playersCount) {
         this.playersCount = playersCount;
         players = new LinkedList<>();
@@ -27,15 +31,22 @@ public class Game {
         this.status = GameStatus.NEW;
         this.startTime = LocalDateTime.now();
         this.usedLetters = new ArrayList<>();
+        this.answers = new HashMap<>();
+        this.results = new LinkedList<>();
     }
 
     public void setLetter(Character letter) {
         this.letter = letter;
         this.usedLetters.add(letter);
+        this.answers.put(letter, new ArrayList<>());
     }
 
-    public void addUsedLetter(Character letter) {
-        this.usedLetters.add(letter);
+    public void addAnswer(Answer answer) {
+        this.answers.get(letter).add(answer);
+    }
+
+    public void addRoundResult(RoundResultDto roundResultDto){
+        this.results.add(roundResultDto);
     }
 
 }

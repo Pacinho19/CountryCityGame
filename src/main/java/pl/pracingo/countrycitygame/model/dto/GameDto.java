@@ -18,13 +18,5 @@ public class GameDto {
     private List<String> players;
     private LocalDateTime startTime;
     private int playersCount;
-    private Integer playerIndex;
     private Character currentLetter;
-
-    public int getNextPlayer(int offset) {
-        int idx = playerIndex + offset;
-        if (idx > playersCount) return idx - playersCount;
-        return idx;
-    }
-
 }

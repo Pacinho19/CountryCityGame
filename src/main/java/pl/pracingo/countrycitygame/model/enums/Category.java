@@ -15,7 +15,8 @@ public enum Category {
 
     private final Function<String, Boolean> checkFunction;
 
-    public boolean check(String value) {
+    public boolean check(Character character, String value) {
+        if (!value.startsWith(String.valueOf(character))) return false;
         return checkFunction.apply(value);
     }
 

@@ -42,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(EndpointsConfig.UI_PREFIX).permitAll()
                 .antMatchers(EndpointsConfig.UI_GAMES).permitAll()
                 .antMatchers(EndpointsConfig.API_PREFIX + "/**").permitAll()
+                .antMatchers("/ws/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin();

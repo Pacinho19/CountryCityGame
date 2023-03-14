@@ -73,9 +73,11 @@ public class GameController {
     public String gamePage(@PathVariable(value = "gameId") String gameId,
                            Model model,
                            Authentication authentication) {
-        model.addAttribute("game", gameService.findDtoById(gameId, authentication.getName()));
+        GameDto game = gameService.findDtoById(gameId, authentication.getName());
+        boolean canPlay = gameService.canPlay(authentication.getName(), gameId);
+        model.addAttribute("game", game);
         model.addAttribute("categories", Category.getCategoriesNames());
-        model.addAttribute("answerDto", new AnswerDto());
+        if(canPlay) model.addAttribute("answerDto", new AnswerDto());
         return "game";
     }
 
@@ -84,5 +86,14 @@ public class GameController {
     public void answer(Authentication authentication,
                        @PathVariable(value = "gameId") String gameId,
                        AnswerDto answerDto) {
+        gameService.answer(authentication.getName(), gameId, answerDto);
+    }
+
+    @GetMapping(EndpointsConfig.UI_GAME_BOARD_RELOAD)
+    public String reloadBoard(Authentication authentication,
+                              Model model,
+                              @PathVariable(value = "gameId") String gameId) {
+        model.addAttribute("game", gameService.findDtoById(gameId, authentication.getName()));
+        return "fragments/board :: boardFrag";
     }
 }
