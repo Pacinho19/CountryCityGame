@@ -9,11 +9,10 @@ public class EndpointsConfig {
     public static final String API_COUNTRY = API_PREFIX+ "/country";
 
 //    ================= UI =================
-    public static final String PREFIX = "/country-city-game";
-    public static final String GAMES = PREFIX + "/games";
-    public static final String NEW_GAME = GAMES + "/new";
-    public static final String GAME_PAGE = GAMES + "/{gameId}";
-    public static final String GAME_ROOM = GAME_PAGE + "/room";
-    public static final String PLAYERS = GAME_ROOM + "/players";
-
+    public static final String UI_PREFIX = "/country-city-game";
+    public static final String UI_GAMES = UI_PREFIX + "/games";
+    public static final String UI_NEW_GAME = UI_GAMES + "/new";
+    public static final String UI_GAME_PAGE = UI_GAMES + "/{gameId}";
+    public static final String UI_GAME_ROOM = UI_GAME_PAGE + "/room";
+    public static final String UI_GAME_ROOM_PLAYERS = UI_GAME_ROOM + "/players";
 }
