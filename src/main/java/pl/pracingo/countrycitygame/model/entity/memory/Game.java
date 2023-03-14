@@ -46,7 +46,7 @@ public class Game {
     }
 
     public void addRoundResult(RoundResultDto roundResultDto){
-        this.results.add(roundResultDto);
+        this.results.add(0, roundResultDto);
     }
 
 }
