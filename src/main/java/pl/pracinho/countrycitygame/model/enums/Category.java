@@ -12,7 +12,9 @@ import java.util.function.Function;
 public enum Category {
 
     Country(CategoryFunction.getInstance().SEARCH_COUNTRY, CategoryFunction.getInstance().SAVE_COUNTRY),
-    City(CategoryFunction.getInstance().SEARCH_CITY, CategoryFunction.getInstance().SAVE_CITY);
+    City(CategoryFunction.getInstance().SEARCH_CITY, CategoryFunction.getInstance().SAVE_CITY),
+    Name(CategoryFunction.getInstance().SEARCH_NAME, CategoryFunction.getInstance().SAVE_NAME),
+    Animal(CategoryFunction.getInstance().SEARCH_ANIMAL, CategoryFunction.getInstance().SAVE_ANIMAL);
 
     private final Function<String, Boolean> checkFunction;
     private final BiConsumer<String, Boolean> saveFunction;
