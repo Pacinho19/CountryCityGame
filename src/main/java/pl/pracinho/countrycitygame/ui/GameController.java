@@ -8,13 +8,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.pracinho.countrycitygame.config.EndpointsConfig;
+import pl.pracinho.countrycitygame.model.UnknownAnswerInputDto;
 import pl.pracinho.countrycitygame.model.dto.AnswerDto;
 import pl.pracinho.countrycitygame.model.dto.GameDto;
+import pl.pracinho.countrycitygame.model.dto.UnknownAnswerDto;
 import pl.pracinho.countrycitygame.model.enums.Category;
 import pl.pracinho.countrycitygame.model.enums.GameStatus;
 import pl.pracinho.countrycitygame.service.game.GameService;
 
 import javax.websocket.server.PathParam;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Controller
@@ -138,8 +141,7 @@ public class GameController {
     }
 
     @GetMapping(EndpointsConfig.UI_GAME_ROUND_RELOAD_RESULTS)
-    public String reloadRoundResult(Authentication authentication,
-                                    Model model,
+    public String reloadRoundResult(Model model,
                                     @PathVariable(value = "roundId") String roundId,
                                     @PathVariable(value = "gameId") String gameId) {
         model.addAttribute("roundResult", gameService.getLastRoundSummary(gameId, roundId));
@@ -149,5 +151,32 @@ public class GameController {
         model.addAttribute("playersReady", gameService.getReadyPlayers(gameId));
 
         return "fragments/round-result-table :: roundResultTable";
+    }
+
+    @GetMapping(EndpointsConfig.UI_GAME_UNKNOWN_ANSWERS)
+    public String unknownAnswersPage(RedirectAttributes redirectAttr,
+                                     Model model,
+                                     Authentication authentication,
+                                     @PathVariable(value = "gameId") String gameId) {
+        Set<UnknownAnswerDto> unknownAnswers = gameService.getUnknownAnswers(gameId);
+        if (unknownAnswers.isEmpty()) {
+            redirectAttr.addAttribute("gameId", gameId);
+            return "redirect:" + EndpointsConfig.UI_GAME_PAGE;
+        }
+
+        model.addAttribute("unknownAnswerInput", new UnknownAnswerInputDto(unknownAnswers.stream().toList()));
+        model.addAttribute("gameId", gameId);
+        model.addAttribute("roundId", gameService.getLastRoundId(gameId));
+        model.addAttribute("completed", gameService.checkPlayerCompetedUnknownAnswersVerification(authentication.getName(), gameId));
+
+        return "unknown-answers";
+    }
+
+    @PostMapping(EndpointsConfig.UI_GAME_UNKNOWN_ANSWERS_CONFIRM)
+    public String unknownAnswersConfirm(UnknownAnswerInputDto unknownAnswerInput,
+                                        Authentication authentication,
+                                        @PathVariable(value = "gameId") String gameId) {
+        gameService.confirmUnknownAnswers(gameId, unknownAnswerInput.getUnknownAnswers(), authentication.getName());
+        return "redirect:" + EndpointsConfig.UI_GAME_UNKNOWN_ANSWERS;
     }
 }

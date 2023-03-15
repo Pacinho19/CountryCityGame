@@ -5,10 +5,10 @@ public class EndpointsConfig {
 //    ================= API =================
 
     public static final String API_PREFIX = "/api";
-    public static final String API_CITY = API_PREFIX+ "/city";
-    public static final String API_COUNTRY = API_PREFIX+ "/country";
+    public static final String API_CITY = API_PREFIX + "/city";
+    public static final String API_COUNTRY = API_PREFIX + "/country";
 
-//    ================= UI =================
+    //    ================= UI =================
     public static final String UI_PREFIX = "/country-city-game";
     public static final String UI_GAMES = UI_PREFIX + "/games";
     public static final String UI_NEW_GAME = UI_GAMES + "/new";
@@ -22,4 +22,6 @@ public class EndpointsConfig {
     public static final String UI_GAME_ROUND_SUMMARY = UI_GAME_ROUND + "/summary";
     public static final String UI_GAME_ROUND_READY = UI_GAME_ROUND + "/ready";
     public static final String UI_GAME_ROUND_RELOAD_RESULTS = UI_GAME_ROUND + "/reload-results";
+    public static final String UI_GAME_UNKNOWN_ANSWERS = UI_GAME_PAGE + "/unknown-answers";
+    public static final String UI_GAME_UNKNOWN_ANSWERS_CONFIRM = UI_GAME_UNKNOWN_ANSWERS + "/confirm";
 }

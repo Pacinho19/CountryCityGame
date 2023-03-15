@@ -28,7 +28,7 @@ public class StartApp {
 
         FileUtils.readTxt(FileUtils.getFileFromResource("dictionary/City.txt"))
                 .forEach(name -> cityRepository.save(
-                        new City(name)
+                        new City(name, null)
                 ));
     }
 
@@ -37,7 +37,7 @@ public class StartApp {
 
         FileUtils.readTxt(FileUtils.getFileFromResource("dictionary/Country.txt"))
                 .forEach(name -> countryRepository.save(
-                        new Country(name)
+                        new Country(name, null)
                 ));
 
     }

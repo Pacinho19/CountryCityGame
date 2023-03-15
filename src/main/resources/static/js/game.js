@@ -15,6 +15,10 @@ privateStompClient.connect({}, function (frame) {
              roundId = result.body;
              window.location.href = '/country-city-game/games/' + gameId+"/round/" + roundId+"/summary";
      });
+
+      privateStompClient.subscribe('/unknown-answers/' + gameId, function (result) {
+            window.location.href = '/country-city-game/games/' + gameId+"/unknown-answers";
+      });
 });
 
 stompClient = Stomp.over(socket);

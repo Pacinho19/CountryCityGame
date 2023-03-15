@@ -3,9 +3,7 @@ package pl.pracinho.countrycitygame.service.game;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pracinho.countrycitygame.exception.GameNotFoundException;
-import pl.pracinho.countrycitygame.model.dto.CategoryAnswerDto;
-import pl.pracinho.countrycitygame.model.dto.CategoryResultDto;
-import pl.pracinho.countrycitygame.model.dto.RoundResultDto;
+import pl.pracinho.countrycitygame.model.dto.*;
 import pl.pracinho.countrycitygame.model.entity.memory.Answer;
 import pl.pracinho.countrycitygame.model.entity.memory.Game;
 import pl.pracinho.countrycitygame.model.entity.memory.Player;
@@ -15,6 +13,7 @@ import pl.pracinho.countrycitygame.utils.LettersUtils;
 import pl.pracinho.countrycitygame.utils.RandomUtils;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -129,5 +128,58 @@ public class GameLogicService {
         RoundResultDto lastRoundResult = getLastRoundResult(game);
         if (lastRoundResult == null) return Collections.emptyList();
         return lastRoundResult.getReadyPlayers().stream().toList();
+    }
+
+    public boolean confirmUnknownAnswers(Game game, List<UnknownAnswerDto> unknownAnswers, String playerName) {
+        unknownAnswers.forEach(
+                ua -> {
+                    if (!game.getUnknownAnswers().contains(ua)) return;
+                    game.addUnknownAnswersResult(new UnknownAnswerResultDto(playerName, ua));
+                }
+        );
+
+        int playersFinishedCount = (int) getPlayersCompletedUnknownAnswers(game.getUnknownAnswersResult());
+        if (playersFinishedCount != game.getPlayersCount())
+            return false;
+
+        checkUnknownAnswers(game);
+        return true;
+
+    }
+
+    private void checkUnknownAnswers(Game game) {
+        Map<Integer, UnknownAnswerDto> unknownAnswersMap = game.getUnknownAnswers()
+                .stream()
+                .collect(Collectors.toMap(UnknownAnswerDto::hashCode, Function.identity()));
+
+        Map<Integer, List<UnknownAnswerDto>> unknownAnswerResultsMap = game.getUnknownAnswersResult().stream()
+                .map(UnknownAnswerResultDto::unknownAnswerDto)
+                .collect(Collectors.groupingBy(UnknownAnswerDto::hashCode));
+
+        unknownAnswersMap.entrySet()
+                .forEach(entry -> {
+                    boolean correct = false;
+                    List<UnknownAnswerDto> unknownAnswerResults = unknownAnswerResultsMap.get(entry.getKey());
+                    if (unknownAnswerResults != null)
+                        correct = checkMinConfirmAnswerCount(unknownAnswerResults, game.getPlayersCount());
+
+                    UnknownAnswerDto unknownAnswerDto = unknownAnswerResults.get(0);
+                    unknownAnswerDto.getCategory().save(unknownAnswerDto.getValue(), correct);
+                });
+
+    }
+
+    private boolean checkMinConfirmAnswerCount(List<UnknownAnswerDto> value, int playersCount) {
+        double min = (double) playersCount / 2;
+        return (double) value.stream()
+                .filter(UnknownAnswerDto::getCorrect)
+                .count() > min;
+    }
+
+    private long getPlayersCompletedUnknownAnswers(List<UnknownAnswerResultDto> unknownAnswersResult) {
+        return unknownAnswersResult.stream()
+                .map(UnknownAnswerResultDto::playerName)
+                .distinct()
+                .count();
     }
 }

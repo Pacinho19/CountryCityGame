@@ -1109,7 +1109,6 @@ Mariupol
 Danjiangkou
 Chiclayo
 Penglai
-: Oaxaca de Juárez
 Aba
 Astrachañ
 MAKAU
@@ -2590,7 +2589,6 @@ Castellón de la Plana
 Khandwa
 Nachodka
 Pointe-a-Pitre
-#NAME?
 Namdinh
 Bat Dambang
 Alexandra

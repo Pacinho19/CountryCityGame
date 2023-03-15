@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Round summary</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+
+    <script type="text/javascript" th:src="@{/js/core.js}"></script>
+    <script type="text/javascript" th:src="@{/js/unknown-answers.js}"></script>
+</head>
+<body>
+
+<div th:replace="fragments/topnav :: navbar"/>
+
+
+<input type="hidden" id="gameId" th:value="${gameId}">
+<input type="hidden" id="roundId" th:value="${roundId}">
+
+<div class="row" style="margin-top:2%">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+
+        <div th:if="${!completed}">
+            <form th:object="${unknownAnswerInput}" method="post"
+                  th:action="@{'/country-city-game/games/' + ${gameId} +'/unknown-answers/confirm'}">
+                <table style="margin-top:1%;" class="table table-bordered">
+                    <thead class="">
+                    <tr>
+                        <th>Category</th>
+                        <th>Value</th>
+                        <th>Correct ?</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="unknownAnswer, stat : ${unknownAnswerInput.unknownAnswers}">
+                        <td>
+                            <span th:text="${unknownAnswer.category.name()}">Category name</span>
+                        </td>
+                        <td>
+                            <span th:text="${unknownAnswer.value}">Value</span>
+                        </td>
+                        <td>
+                            <input type="checkbox" th:field="*{unknownAnswers[__${stat.index}__].correct}"/>
+                            <input type="hidden" th:field="*{unknownAnswers[__${stat.index}__].category}"
+                                   th:value="${unknownAnswer.category}"/>
+                            <input type="hidden" th:field="*{unknownAnswers[__${stat.index}__].value}"
+                                   th:value="${unknownAnswer.value}"/>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <div style="text-align:center">
+                    <button type="submit" class="btn btn-primary" style="width:60%;text-align:center">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div style="text-align:center">
+            <h1 th:if="${completed}">Waiting for verification other players!</h1>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+</body>
+</html>

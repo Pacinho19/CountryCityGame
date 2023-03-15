@@ -3,6 +3,8 @@ package pl.pracinho.countrycitygame.model.entity.memory;
 import lombok.Getter;
 import lombok.Setter;
 import pl.pracinho.countrycitygame.model.dto.RoundResultDto;
+import pl.pracinho.countrycitygame.model.dto.UnknownAnswerDto;
+import pl.pracinho.countrycitygame.model.dto.UnknownAnswerResultDto;
 import pl.pracinho.countrycitygame.model.enums.GameStatus;
 
 import java.time.LocalDateTime;
@@ -19,9 +21,10 @@ public class Game {
     private int playersCount;
     private Character letter;
     private List<Character> usedLetters;
-
     private Map<Character, List<Answer>> answers;
     private List<RoundResultDto> results;
+    private Set<UnknownAnswerDto> unknownAnswers;
+    private List<UnknownAnswerResultDto> unknownAnswersResult;
 
     public Game(String player1, int playersCount) {
         this.playersCount = playersCount;
@@ -31,8 +34,10 @@ public class Game {
         this.status = GameStatus.NEW;
         this.startTime = LocalDateTime.now();
         this.usedLetters = new ArrayList<>();
+        this.unknownAnswers = new HashSet<>();
         this.answers = new HashMap<>();
         this.results = new LinkedList<>();
+        this.unknownAnswersResult = new ArrayList<>();
     }
 
     public void setLetter(Character letter) {
@@ -45,8 +50,16 @@ public class Game {
         this.answers.get(letter).add(answer);
     }
 
-    public void addRoundResult(RoundResultDto roundResultDto){
+    public void addRoundResult(RoundResultDto roundResultDto) {
         this.results.add(0, roundResultDto);
+    }
+
+    public void addUnknownAnswers(List<UnknownAnswerDto> unknownAnswers) {
+        this.unknownAnswers.addAll(unknownAnswers);
+    }
+
+    public void addUnknownAnswersResult(UnknownAnswerResultDto unknownAnswersResult) {
+        this.unknownAnswersResult.add(unknownAnswersResult);
     }
 
 }
