@@ -11,8 +11,9 @@ privateStompClient.connect({}, function (frame) {
         else showPlayerAnswerInfo(playerName);
     });
 
-     privateStompClient.subscribe('/next-round/' + gameId, function (result) {
-             window.location.href = '/country-city-game/games/' + gameId;
+     privateStompClient.subscribe('/round-summary/' + gameId, function (result) {
+             roundId = result.body;
+             window.location.href = '/country-city-game/games/' + gameId+"/round/" + roundId+"/summary";
      });
 });
 
