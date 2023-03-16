@@ -30,6 +30,9 @@ public class Game {
     private int roundNumber;
     private LocalDateTime roundStartTime;
 
+    @Setter
+    private boolean connectionTaskStarted;
+
     public Game(String player1, int playersCount, int roundsCount) {
         this.playersCount = playersCount;
         players = new LinkedList<>();
@@ -44,9 +47,11 @@ public class Game {
         this.unknownAnswersResult = new ArrayList<>();
         this.roundNumber = 1;
         this.roundsCount = roundsCount;
+        this.connectionTaskStarted=false;
     }
 
     public void setLetter(Character letter) {
+        this.connectionTaskStarted=false;
         this.roundStartTime = LocalDateTime.now();
         this.letter = letter;
         this.usedLetters.add(letter);

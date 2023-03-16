@@ -79,7 +79,7 @@ public class GameService {
         List<UnknownAnswerDto> unknownAnswers = getUnknownAnswers(game.getLetter(), answerDto.getAnswers());
         if (!unknownAnswers.isEmpty()) game.addUnknownAnswers(unknownAnswers);
 
-        if (checkConnectionTask) checkConnectionTask(game.getId(), game.getRoundNumber());
+        if (checkConnectionTask && !game.isConnectionTaskStarted()) checkConnectionTask(game.getId(), game.getRoundNumber());
 
         boolean allPlayersFinished = gameLogicService.allPlayersFinished(game);
         if (allPlayersFinished) game.incrementRound();
@@ -99,6 +99,9 @@ public class GameService {
     }
 
     private void checkConnectionTask(String gameId, int roundNumber) {
+        Game game = gameLogicService.findById(gameId);
+        game.setConnectionTaskStarted(true);
+
         TimerTask task = new TimerTask() {
             public void run() {
                 Game game = checkRound(gameId, roundNumber);

@@ -29,6 +29,8 @@ privateStompClient.connect({}, function (frame) {
 stompClient = Stomp.over(socket);
 
 function endRound(gameState, isPlayer) {
+    if(isTimerRun()) return;
+
     if (gameState.message != null && gameState.connection) {
         endRoundTimer(isPlayer);
     }
@@ -36,6 +38,10 @@ function endRound(gameState, isPlayer) {
         showConnectionLostAlert(gameState.message);
         setTimeout(function () { goToGamePage(); }, 3000);
     }
+}
+
+function isTimerRun(){
+    return document.getElementById('endRoundGiv').style.display == 'block';
 }
 
 function goToGamePage() {
@@ -62,8 +68,6 @@ function showPlayerAnswerInfo(playerName) {
 }
 
 function endRoundTimer(isPlayer) {
-    console.log('endRoundTimer start');
-
     document.getElementById("endRoundGiv").style.display = 'block';
     document.getElementById('endRoundText').classList.add("zoom-in-out-box");
 
