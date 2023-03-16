@@ -32,6 +32,29 @@
 
 <body>
         <div th:replace="fragments/topnav :: navbar" />
+
+        <div class="row" style="margin-top:1%">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                        <div id="endRoundGiv" style="display:none;margin-top:1%">
+                                <div class="row">
+                                        <h3 class="center" id="endRoundText">End round in <span id="roundStartTime">15
+                                                        seconds</span></h3>
+                                </div>
+                                <div class="row">
+                                        <progress value="15" max="15" id="progressBarEndRound"
+                                                style="text-align:center;height:40px;width:100%;"></progress>
+                                </div>
+                        </div>
+                </div>
+                <div class="col-md-1">
+                        <div class="alert alert-success" id="answer-player-alert" style="display:none">
+                                <button type="button" class="close" data-dismiss="alert">x</button>
+                                <strong id="playerAnswerName"> </strong>
+                        </div>
+                </div>
+        </div>
+
         <div th:replace="fragments/board :: boardFrag" />
 
 </body>

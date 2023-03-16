@@ -6,6 +6,16 @@
     <div class="row" style="margin-top:2%">
         <div class="col-md-1"></div>
         <div class="col-md-10">
+            <div style="display:none;text-align:center;margin-top:1%" class="alert alert-warning"
+                id="warningMessageDiv">
+                <h4 class="warning" id="warningMessageTxt">Possible connection lost with opponent... Waiting ..</h4>
+            </div>
+
+            <div style="text-align:center;margin-top:1%" th:if="${endRoundSoonMessage!=null}"
+                class="alert alert-warning">
+                <h4 class="warning" th:text="${endRoundSoonMessage}"></h4>
+            </div>
+
             <div style="text-align:center">
                 <span class="badge badge-primary" th:text="${game.currentLetter}" style="font-size:8rem;">A</span>
             </div>
@@ -13,7 +23,7 @@
             <hr class="hr hr-blurry" />
 
             <div style="text-align:center;margin-top:2%;" th:if="${answerDto!=null}">
-                <form th:object="${answerDto}" style="width:100%" th:method="post"
+                <form id='answerForm' th:object="${answerDto}" style="width:100%" th:method="post"
                     th:action="@{'/country-city-game/games/'+${game.id}+'/answer'}">
 
                     <div class="row" th:each="category : ${categories}">
@@ -86,10 +96,6 @@
             </div>
         </div>
         <div class="col-md-1">
-            <div class="alert alert-success" id="answer-player-alert" style="display:none">
-                <button type="button" class="close" data-dismiss="alert">x</button>
-                <strong id="playerAnswerName"> </strong>
-            </div>
         </div>
     </div>
 

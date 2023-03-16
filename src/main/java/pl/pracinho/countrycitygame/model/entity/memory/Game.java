@@ -25,6 +25,7 @@ public class Game {
     private List<RoundResultDto> results;
     private Set<UnknownAnswerDto> unknownAnswers;
     private List<UnknownAnswerResultDto> unknownAnswersResult;
+    private int roundNumber;
 
     public Game(String player1, int playersCount) {
         this.playersCount = playersCount;
@@ -38,6 +39,7 @@ public class Game {
         this.answers = new HashMap<>();
         this.results = new LinkedList<>();
         this.unknownAnswersResult = new ArrayList<>();
+        this.roundNumber = 1;
     }
 
     public void setLetter(Character letter) {
@@ -62,4 +64,7 @@ public class Game {
         this.unknownAnswersResult.add(unknownAnswersResult);
     }
 
+    public void incrementRound() {
+        this.roundNumber++;
+    }
 }

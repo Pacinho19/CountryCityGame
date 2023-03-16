@@ -186,4 +186,35 @@ public class GameLogicService {
     public void upperCaseAnswer(Map<Category, String> answers) {
         answers.forEach((key, value) -> value = value.toUpperCase());
     }
+
+    public AnswerDto emptyAnswer() {
+        AnswerDto answerDto = new AnswerDto();
+        answerDto.setAnswers(
+                Arrays.stream(Category.values())
+                        .collect(Collectors.toMap(cat -> cat, cat -> ""))
+        );
+        return answerDto;
+    }
+
+    public String checkEndRoundSoonMessage(String name, GameDto gameDto) {
+        Game game = findById(gameDto.getId());
+        if (checkTheSameRound(game.getPlayers())) return null;
+        boolean canPlay = canPlay(name, game.getId());
+        return (canPlay ? "" : "Waiting for opponents. ")
+               + "Round will be finished soon ...  ";
+    }
+
+    private boolean checkTheSameRound(LinkedList<Player> players) {
+        return players.stream()
+                       .map(Player::getCompletedRounds)
+                       .distinct()
+                       .count() == 1;
+    }
+
+    public boolean canPlay(String playerName, String gameId) {
+        Game game = findById(gameId);
+        return game.getAnswers().get(game.getLetter())
+                .stream()
+                .noneMatch(a -> a.player().getName().equals(playerName));
+    }
 }

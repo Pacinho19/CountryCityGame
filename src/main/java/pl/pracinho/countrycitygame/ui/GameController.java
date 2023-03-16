@@ -87,6 +87,7 @@ public class GameController {
             boolean canPlay = gameService.canPlay(authentication.getName(), gameId);
             model.addAttribute("game", game);
             model.addAttribute("categories", Category.getCategoriesNames());
+            model.addAttribute("endRoundSoonMessage", gameService.checkEndRoundSoonMessage(authentication.getName(), game));
             if (canPlay) model.addAttribute("answerDto", new AnswerDto());
             return "game";
         }
@@ -102,7 +103,7 @@ public class GameController {
     public void answer(Authentication authentication,
                        @PathVariable(value = "gameId") String gameId,
                        AnswerDto answerDto) {
-        gameService.answer(authentication.getName(), gameId, answerDto);
+        gameService.answer(authentication.getName(), gameId, answerDto, true);
     }
 
     @GetMapping(EndpointsConfig.UI_GAME_BOARD_RELOAD)
