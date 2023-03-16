@@ -36,7 +36,10 @@ public class GameService {
         List<GameDto> activeGames = getAvailableGames();
         if (activeGames.size() >= 10)
             throw new IllegalStateException("Cannot create new Game! Active game count : " + activeGames.size());
-        return gameRepository.newGame(name, playersCount);
+
+        String gameId = gameRepository.newGame(name, playersCount);
+        simpMessagingTemplate.convertAndSend("/game-created", true);
+        return gameId;
     }
 
     public GameDto findDtoById(String gameId, String name) {
@@ -67,6 +70,8 @@ public class GameService {
         Player player = gameLogicService.getPlayerFromGame(playerName, game.getPlayers());
 
         if (!gameLogicService.checkPlayerCanAnswer(game, player)) return;
+
+        gameLogicService.upperCaseAnswer(answerDto.getAnswers());
 
         game.addAnswer(
                 new Answer(answerDto.getAnswers(), player)

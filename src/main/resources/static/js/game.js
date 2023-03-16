@@ -7,18 +7,18 @@ privateStompClient.connect({}, function (frame) {
     var gameId = document.getElementById('gameId').value;
     privateStompClient.subscribe('/reload-board/' + gameId, function (result) {
         playerName = result.body;
-        if(playerName==document.getElementById('playerName').value) updateBoard();
+        if (playerName == document.getElementById('playerName').value) updateBoard();
         else showPlayerAnswerInfo(playerName);
     });
 
-     privateStompClient.subscribe('/round-summary/' + gameId, function (result) {
-             roundId = result.body;
-             window.location.href = '/country-city-game/games/' + gameId+"/round/" + roundId+"/summary";
-     });
+    privateStompClient.subscribe('/round-summary/' + gameId, function (result) {
+        roundId = result.body;
+        window.location.href = '/country-city-game/games/' + gameId + "/round/" + roundId + "/summary";
+    });
 
-      privateStompClient.subscribe('/unknown-answers/' + gameId, function (result) {
-            window.location.href = '/country-city-game/games/' + gameId+"/unknown-answers";
-      });
+    privateStompClient.subscribe('/unknown-answers/' + gameId, function (result) {
+        window.location.href = '/country-city-game/games/' + gameId + "/unknown-answers";
+    });
 });
 
 stompClient = Stomp.over(socket);
@@ -34,9 +34,9 @@ function updateBoard() {
     xhr.send(null);
 }
 
-function showPlayerAnswerInfo(playerName){
- document.getElementById('playerAnswerName').innerHTML = playerName + ' send his answer!';
-                $("#answer-player-alert").fadeTo(2000, 500).slideUp(500, function() {
-                  $("#answer-player-alert").slideUp(500);
-                });
+function showPlayerAnswerInfo(playerName) {
+    document.getElementById('playerAnswerName').innerHTML = playerName + ' send his answer!';
+    $("#answer-player-alert").fadeTo(2000, 500).slideUp(500, function () {
+        $("#answer-player-alert").slideUp(500);
+    });
 }

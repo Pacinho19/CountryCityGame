@@ -182,4 +182,8 @@ public class GameLogicService {
                 .distinct()
                 .count();
     }
+
+    public void upperCaseAnswer(Map<Category, String> answers) {
+        answers.forEach((key, value) -> value = value.toUpperCase());
+    }
 }

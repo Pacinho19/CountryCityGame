@@ -18,20 +18,34 @@
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
 
     <script>
-        setInterval(updateAvailableGames, 10000);
-
         function updateAvailableGames() {
             $.post("/country-city-game/games").done(function (fragment) {
                 $("#availableGames").replaceWith(fragment);
             });
         };
-    </script>
 
+        var stompClient = null;
+        var privateStompClient = null;
+
+        var socket = new SockJS('/ws');
+        privateStompClient = Stomp.over(socket);
+        privateStompClient.connect({}, function (frame) {
+            privateStompClient.subscribe('/game-created', function (result) {
+                updateAvailableGames();
+            });
+        });
+
+        stompClient = Stomp.over(socket);
+    </script>
 </head>
 
 <body onload="updateAvailableGames();">
+
+    <div th:replace="fragments/topnav :: navbar" />
 
     <div class="row" style="margin-top:1%">
         <div class="col-md-2"></div>
@@ -49,7 +63,8 @@
 
         </div>
         <div class="col-md-2" style="text-align:center; margin-top:1%">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#gameOptionsModal">New Game</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#gameOptionsModal">New
+                Game</button>
         </div>
     </div>
 
@@ -66,8 +81,9 @@
                 <form th:action="@{'/country-city-game/games/new'}" th:method="post">
                     <div class="modal-body">
                         <span style="display:inline-block">Players Count</span>
-                        <select style="display:inline-block;margin-left: 1%;width:70%" class="form-control selectpicker" name="playersCount">
-                            <option  th:each="i : ${#numbers.sequence(2,4)}" th:text="${i}" th:value="${i}"></option>
+                        <select style="display:inline-block;margin-left: 1%;width:70%" class="form-control selectpicker"
+                            name="playersCount">
+                            <option th:each="i : ${#numbers.sequence(2,4)}" th:text="${i}" th:value="${i}"></option>
                         </select>
                     </div>
                     <div class="modal-footer">

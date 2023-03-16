@@ -8,10 +8,7 @@ import pl.pracinho.countrycitygame.model.entity.memory.Game;
 import pl.pracinho.countrycitygame.model.entity.memory.Player;
 import pl.pracinho.countrycitygame.model.enums.GameStatus;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class GameRepository {
@@ -33,6 +30,7 @@ public class GameRepository {
                 .stream()
                 .filter(game -> game.getStatus() != GameStatus.FINISHED)
                 .map(GameDtoMapper::parse)
+                .sorted(Comparator.comparing(GameDto::getStartTime).reversed())
                 .toList();
     }
 
