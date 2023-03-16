@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pracinho.countrycitygame.exception.GameNotFoundException;
 import pl.pracinho.countrycitygame.model.dto.*;
-import pl.pracinho.countrycitygame.model.entity.memory.Answer;
+import pl.pracinho.countrycitygame.model.Answer;
 import pl.pracinho.countrycitygame.model.entity.memory.Game;
 import pl.pracinho.countrycitygame.model.entity.memory.Player;
 import pl.pracinho.countrycitygame.model.enums.Category;

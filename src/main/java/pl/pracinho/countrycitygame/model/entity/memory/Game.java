@@ -2,6 +2,7 @@ package pl.pracinho.countrycitygame.model.entity.memory;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.pracinho.countrycitygame.model.Answer;
 import pl.pracinho.countrycitygame.model.dto.RoundResultDto;
 import pl.pracinho.countrycitygame.model.dto.UnknownAnswerDto;
 import pl.pracinho.countrycitygame.model.dto.UnknownAnswerResultDto;
@@ -27,6 +28,7 @@ public class Game {
     private List<UnknownAnswerResultDto> unknownAnswersResult;
     private final int roundsCount;
     private int roundNumber;
+    private LocalDateTime roundStartTime;
 
     public Game(String player1, int playersCount, int roundsCount) {
         this.playersCount = playersCount;
@@ -45,6 +47,7 @@ public class Game {
     }
 
     public void setLetter(Character letter) {
+        this.roundStartTime = LocalDateTime.now();
         this.letter = letter;
         this.usedLetters.add(letter);
         this.answers.put(letter, new ArrayList<>());

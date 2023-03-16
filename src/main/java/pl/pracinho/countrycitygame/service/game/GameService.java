@@ -5,7 +5,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import pl.pracinho.countrycitygame.model.dto.*;
 import pl.pracinho.countrycitygame.model.dto.mapper.GameDtoMapper;
-import pl.pracinho.countrycitygame.model.entity.memory.Answer;
+import pl.pracinho.countrycitygame.model.Answer;
 import pl.pracinho.countrycitygame.model.entity.memory.Game;
 import pl.pracinho.countrycitygame.model.entity.memory.Player;
 import pl.pracinho.countrycitygame.model.enums.Category;
@@ -13,6 +13,8 @@ import pl.pracinho.countrycitygame.model.enums.GameStatus;
 import pl.pracinho.countrycitygame.model.enums.Place;
 import pl.pracinho.countrycitygame.repository.game.GameRepository;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -64,6 +66,9 @@ public class GameService {
         Game game = gameLogicService.findById(gameId);
         Player player = gameLogicService.getPlayerFromGame(playerName, game.getPlayers());
         player.incrementCompletedRounds();
+        player.incrementSummaryTime(
+                ChronoUnit.MILLIS.between(game.getRoundStartTime(), LocalDateTime.now())
+        );
 
         if (!gameLogicService.checkPlayerCanAnswer(game, player)) return;
 
@@ -232,15 +237,15 @@ public class GameService {
 
         List<Player> players = game.getPlayers()
                 .stream()
-                .sorted(Comparator.comparing(Player::getPoints).reversed())
+                .sorted(Comparator.comparing(Player::getPoints).reversed().thenComparing(Player::getSummaryTime))
                 .toList();
 
         List<PlayerSummaryDto> playersSummary = IntStream.range(0, players.size())
                 .boxed()
                 .map(i -> {
                     Player p = players.get(i);
-                    return new PlayerSummaryDto(p.getName(), p.getPoints(), Place.findByNumber(i + 1));
-                }).sorted(Comparator.comparing(PlayerSummaryDto::points).reversed())
+                    return new PlayerSummaryDto(p.getName(), p.getPoints(), p.getSummaryTime(), Place.findByNumber(i + 1));
+                }).sorted(Comparator.comparing(PlayerSummaryDto::points).reversed().thenComparing(PlayerSummaryDto::summaryTime))
                 .toList();
 
         return new GameSummaryDto(playersSummary);

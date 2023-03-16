@@ -42,6 +42,7 @@
             <tr style="text-align:center">
                 <th scope="col">Place</th>
                 <th scope="col">Points</th>
+                <th scope="col">Summary Time</th>
                 <th scope="col">Player</th>
             </tr>
             </thead>
@@ -55,8 +56,12 @@
                     <span th:text="${playerSummary.points}" style="font-size:2vw">Points</span>
                 </td>
                 <td>
+                    <span th:text="${playerSummary.getSummaryTimeText()}" style="font-size:2vw">Summary Time</span>
+                </td>
+                <td>
                     <span th:text="${playerSummary.name}" style="font-size:2vw">Player</span>
                 </td>
+
             </tr>
             </tbody>
         </table>
