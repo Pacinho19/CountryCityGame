@@ -14,7 +14,8 @@ public enum Category {
     Country(CategoryFunction.getInstance().SEARCH_COUNTRY, CategoryFunction.getInstance().SAVE_COUNTRY),
     City(CategoryFunction.getInstance().SEARCH_CITY, CategoryFunction.getInstance().SAVE_CITY),
     Name(CategoryFunction.getInstance().SEARCH_NAME, CategoryFunction.getInstance().SAVE_NAME),
-    Animal(CategoryFunction.getInstance().SEARCH_ANIMAL, CategoryFunction.getInstance().SAVE_ANIMAL);
+    Animal(CategoryFunction.getInstance().SEARCH_ANIMAL, CategoryFunction.getInstance().SAVE_ANIMAL),
+    Thing(CategoryFunction.getInstance().SEARCH_THING, CategoryFunction.getInstance().SAVE_THING);
 
     private final Function<String, Boolean> checkFunction;
     private final BiConsumer<String, Boolean> saveFunction;

@@ -1,14 +1,8 @@
 package pl.pracinho.countrycitygame.tools;
 
 import org.springframework.stereotype.Component;
-import pl.pracinho.countrycitygame.model.entity.Animal;
-import pl.pracinho.countrycitygame.model.entity.City;
-import pl.pracinho.countrycitygame.model.entity.Country;
-import pl.pracinho.countrycitygame.model.entity.Name;
-import pl.pracinho.countrycitygame.service.AnimalService;
-import pl.pracinho.countrycitygame.service.CityService;
-import pl.pracinho.countrycitygame.service.CountryService;
-import pl.pracinho.countrycitygame.service.NameService;
+import pl.pracinho.countrycitygame.model.entity.*;
+import pl.pracinho.countrycitygame.service.*;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -21,13 +15,15 @@ public class CategoryFunction {
     private CountryService countryService;
     private AnimalService animalService;
     private NameService nameService;
+    private ThingService thingService;
     private static CategoryFunction instance;
 
-    public CategoryFunction(CityService cityService, CountryService countryService, AnimalService animalService, NameService nameService) {
+    public CategoryFunction(CityService cityService, CountryService countryService, AnimalService animalService, NameService nameService, ThingService thingService) {
         this.cityService = cityService;
         this.countryService = countryService;
         this.animalService = animalService;
         this.nameService = nameService;
+        this.thingService = thingService;
         instance = this;
     }
 
@@ -59,6 +55,14 @@ public class CategoryFunction {
         return animal.getCorrect() == null || animal.getCorrect();
     };
 
+    public final Function<String, Boolean> SEARCH_THING = name -> {
+        Optional<Thing> opt = thingService.findByName(name);
+        if (opt.isEmpty()) return null;
+
+        Thing thing = opt.get();
+        return thing.getCorrect() == null || thing.getCorrect();
+    };
+
     public final Function<String, Boolean> SEARCH_NAME = nameS -> {
         Optional<Name> opt = nameService.findByName(nameS);
         if (opt.isEmpty()) return null;
@@ -71,5 +75,6 @@ public class CategoryFunction {
     public final BiConsumer<String, Boolean> SAVE_COUNTRY = (value, correct) -> countryService.save(new Country(value, correct));
     public final BiConsumer<String, Boolean> SAVE_ANIMAL = (value, correct) -> animalService.save(new Animal(value, correct));
     public final BiConsumer<String, Boolean> SAVE_NAME = (value, correct) -> nameService.save(new Name(value, correct));
+    public final BiConsumer<String, Boolean> SAVE_THING = (value, correct) -> thingService.save(new Thing(value, correct));
 
 }
