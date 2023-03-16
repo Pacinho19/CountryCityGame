@@ -19,8 +19,8 @@ public class GameRepository {
         gameMap = new HashMap<>();
     }
 
-    public String newGame(String playerName, int playersCount) {
-        Game game = new Game(playerName, playersCount);
+    public String newGame(String playerName, int playersCount, int roundsCount) {
+        Game game = new Game(playerName, playersCount, roundsCount);
         gameMap.put(game.getId(), game);
         return game.getId();
     }

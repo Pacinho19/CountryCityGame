@@ -20,4 +20,5 @@ public class GameDto {
     private int playersCount;
     private Character currentLetter;
     private List<RoundResultDto> roundResults;
+    private int roundsCount;
 }

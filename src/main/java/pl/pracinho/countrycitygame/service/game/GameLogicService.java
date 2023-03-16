@@ -62,12 +62,12 @@ public class GameLogicService {
         RoundResultDto roundResultDto = new RoundResultDto(game.getLetter());
 
         List.of(Category.values())
-                .forEach(c -> calculateCategoryResult(c, roundResultDto, answers));
+                .forEach(c -> calculateCategoryResult(c, roundResultDto, answers, game));
 
         game.addRoundResult(roundResultDto);
     }
 
-    private void calculateCategoryResult(Category category, RoundResultDto roundResultDto, List<Answer> fullAnswers) {
+    private void calculateCategoryResult(Category category, RoundResultDto roundResultDto, List<Answer> fullAnswers, Game game) {
         List<CategoryAnswerDto> categoryAnswers = fullAnswers.stream()
                 .map(a -> new CategoryAnswerDto(a.answers().get(category), a.player().getName(), category.check(roundResultDto.getLetter(), a.answers().get(category))))
                 .toList();
@@ -80,19 +80,29 @@ public class GameLogicService {
 
         categoryAnswers.stream()
                 .filter(ca -> !ca.correct())
-                .forEach(ca -> categoryResultDtos.add(new CategoryResultDto(ca.playerName(), ca.answer(), 0)));
+                .forEach(ca -> categoryResultDtos.add(getResult(game, ca, 0)));
 
         if (correctAnswers.size() == 1) {
             CategoryAnswerDto categoryAnswerDto = correctAnswers.get(0);
-            categoryResultDtos.add(new CategoryResultDto(categoryAnswerDto.playerName(), categoryAnswerDto.answer(), 15));
+            categoryResultDtos.add(
+                    getResult(game, categoryAnswerDto, 15)
+            );
         } else {
             getAnswersGroup(correctAnswers)
                     .forEach(answersByGroup ->
-                            answersByGroup.forEach(ac -> categoryResultDtos.add(new CategoryResultDto(ac.playerName(), ac.answer(), answersByGroup.size() == 1 ? 10 : 5))));
+                            answersByGroup.forEach(ac -> categoryResultDtos.add(
+                                    getResult(game, ac, answersByGroup.size() == 1 ? 10 : 5)))
+                    );
         }
 
         categoryResultDtos.sort(Comparator.comparing(CategoryResultDto::playerName));
         roundResultDto.addCategoryResult(category, categoryResultDtos);
+    }
+
+    private CategoryResultDto getResult(Game game, CategoryAnswerDto ca, int points) {
+        Player playerFromGame = getPlayerFromGame(ca.playerName(), game.getPlayers());
+        playerFromGame.addPoints(points);
+        return new CategoryResultDto(ca.playerName(), ca.answer(), points);
     }
 
     private Collection<List<CategoryAnswerDto>> getAnswersGroup(List<CategoryAnswerDto> correctAnswers) {
@@ -183,8 +193,10 @@ public class GameLogicService {
                 .count();
     }
 
-    public void upperCaseAnswer(Map<Category, String> answers) {
-        answers.forEach((key, value) -> value = value.toUpperCase());
+    public Map<Category, String>  upperCaseAnswer(Map<Category, String> answers) {
+        return answers.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().toUpperCase()));
     }
 
     public AnswerDto emptyAnswer() {

@@ -25,7 +25,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 "/next-round",
                 "/player-ready-alert",
                 "/unknown-answers",
-                "/game-created");
+                "/game-created",
+                "/game-over"
+        );
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/users");
     }

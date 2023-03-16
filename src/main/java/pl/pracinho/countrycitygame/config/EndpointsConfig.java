@@ -24,4 +24,5 @@ public class EndpointsConfig {
     public static final String UI_GAME_ROUND_RELOAD_RESULTS = UI_GAME_ROUND + "/reload-results";
     public static final String UI_GAME_UNKNOWN_ANSWERS = UI_GAME_PAGE + "/unknown-answers";
     public static final String UI_GAME_UNKNOWN_ANSWERS_CONFIRM = UI_GAME_UNKNOWN_ANSWERS + "/confirm";
+    public static final String UI_GAME_OVER = UI_GAME_PAGE + "/over";
 }

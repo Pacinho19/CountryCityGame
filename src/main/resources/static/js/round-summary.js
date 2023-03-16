@@ -14,6 +14,10 @@ privateStompClient.connect({}, function (frame) {
     privateStompClient.subscribe('/player-ready-alert/' + gameId + "/round/" + roundId, function (result) {
         updateResultTable(roundId);
     });
+
+     privateStompClient.subscribe('/game-over/' + gameId , function (result) {
+          window.location.href = '/country-city-game/games/' + gameId + "/over";
+     });
 });
 
 stompClient = Stomp.over(socket);

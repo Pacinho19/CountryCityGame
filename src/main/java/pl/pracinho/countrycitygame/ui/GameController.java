@@ -37,9 +37,9 @@ public class GameController {
     }
 
     @PostMapping(EndpointsConfig.UI_NEW_GAME)
-    public String newGame(Model model, @PathParam("playersCount") int playersCount, Authentication authentication) {
+    public String newGame(Model model, @PathParam("playersCount") int playersCount, @PathParam("roundsCount") int roundsCount, Authentication authentication) {
         try {
-            return "redirect:" + EndpointsConfig.UI_GAMES + "/" + gameService.newGame(authentication.getName(), playersCount) + "/room";
+            return "redirect:" + EndpointsConfig.UI_GAMES + "/" + gameService.newGame(authentication.getName(), playersCount, roundsCount) + "/room";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return gameHome(model);
@@ -80,6 +80,11 @@ public class GameController {
                            Authentication authentication) {
 
         GameDto game = gameService.findDtoById(gameId, authentication.getName());
+
+        if (game.getStatus() == GameStatus.FINISHED) {
+            redirectAttr.addAttribute("gameId", gameId);
+            return "redirect:" + EndpointsConfig.UI_GAME_OVER;
+        }
 
         boolean allPlayersReady = gameService.checkAllPlayersReady(gameId);
 
@@ -179,5 +184,18 @@ public class GameController {
                                         @PathVariable(value = "gameId") String gameId) {
         gameService.confirmUnknownAnswers(gameId, unknownAnswerInput.getUnknownAnswers(), authentication.getName());
         return "redirect:" + EndpointsConfig.UI_GAME_UNKNOWN_ANSWERS;
+    }
+
+    @GetMapping(EndpointsConfig.UI_GAME_OVER)
+    public String gameOver(Model model,
+                           @PathVariable(value = "gameId") String gameId) {
+
+        try {
+            model.addAttribute("gameSummary", gameService.getGameSummary(gameId));
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return gameHome(model);
+        }
+        return "game-summary";
     }
 }

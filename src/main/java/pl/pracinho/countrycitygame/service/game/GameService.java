@@ -10,9 +10,11 @@ import pl.pracinho.countrycitygame.model.entity.memory.Game;
 import pl.pracinho.countrycitygame.model.entity.memory.Player;
 import pl.pracinho.countrycitygame.model.enums.Category;
 import pl.pracinho.countrycitygame.model.enums.GameStatus;
+import pl.pracinho.countrycitygame.model.enums.Place;
 import pl.pracinho.countrycitygame.repository.game.GameRepository;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Service
@@ -26,12 +28,12 @@ public class GameService {
         return gameRepository.getAvailableGames();
     }
 
-    public String newGame(String name, int playersCount) {
+    public String newGame(String name, int playersCount, int roundsCount) {
         List<GameDto> activeGames = getAvailableGames();
         if (activeGames.size() >= 10)
             throw new IllegalStateException("Cannot create new Game! Active game count : " + activeGames.size());
 
-        String gameId = gameRepository.newGame(name, playersCount);
+        String gameId = gameRepository.newGame(name, playersCount, roundsCount);
         simpMessagingTemplate.convertAndSend("/game-created", true);
         return gameId;
     }
@@ -49,8 +51,7 @@ public class GameService {
         Game game = gameLogicService.findById(gameId);
         boolean startGame = game.getPlayers().size() == game.getPlayersCount();
 
-        if (startGame)
-            game.setLetter(gameLogicService.drawLetter(game.getUsedLetters()));
+        if (startGame) game.setLetter(gameLogicService.drawLetter(game.getUsedLetters()));
 
         return startGame;
     }
@@ -66,27 +67,22 @@ public class GameService {
 
         if (!gameLogicService.checkPlayerCanAnswer(game, player)) return;
 
-        gameLogicService.upperCaseAnswer(answerDto.getAnswers());
+        answerDto.setAnswers(gameLogicService.upperCaseAnswer(answerDto.getAnswers()));
 
-        game.addAnswer(
-                new Answer(answerDto.getAnswers(), player)
-        );
+        game.addAnswer(new Answer(answerDto.getAnswers(), player));
 
         List<UnknownAnswerDto> unknownAnswers = getUnknownAnswers(game.getLetter(), answerDto.getAnswers());
         if (!unknownAnswers.isEmpty()) game.addUnknownAnswers(unknownAnswers);
 
-        if (checkConnectionTask)
-            checkConnectionTask(game.getId(), game.getRoundNumber());
+        if (checkConnectionTask) checkConnectionTask(game.getId(), game.getRoundNumber());
 
         boolean allPlayersFinished = gameLogicService.allPlayersFinished(game);
         if (allPlayersFinished) game.incrementRound();
 
-        if (allPlayersFinished && game.getUnknownAnswers().isEmpty())
-            nextRound(game);
+        if (allPlayersFinished && game.getUnknownAnswers().isEmpty()) nextRound(game);
         else if (allPlayersFinished && !game.getUnknownAnswers().isEmpty())
             simpMessagingTemplate.convertAndSend("/unknown-answers/" + game.getId(), true);
-        else
-            simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), checkGameState(game, playerName));
+        else simpMessagingTemplate.convertAndSend("/reload-board/" + game.getId(), checkGameState(game, playerName));
     }
 
     private GameStateDto checkGameState(Game game, String playerName) {
@@ -106,8 +102,7 @@ public class GameService {
             }
         };
 
-        new Timer("checkConnectionTaskTimer")
-                .schedule(task, 1000 * 20); //20 seconds
+        new Timer("checkConnectionTaskTimer").schedule(task, 1000 * 20); //20 seconds
     }
 
     private void connectionLost(Game game) {
@@ -116,11 +111,7 @@ public class GameService {
     }
 
     public void emptyAnswerOpponents(Game game) {
-        game.getPlayers().stream()
-                .filter(p -> p.getCompletedRounds() != game.getRoundNumber())
-                .forEach(
-                        p -> answer(p.getName(), game.getId(), gameLogicService.emptyAnswer(), false)
-                );
+        game.getPlayers().stream().filter(p -> p.getCompletedRounds() != game.getRoundNumber()).forEach(p -> answer(p.getName(), game.getId(), gameLogicService.emptyAnswer(), false));
     }
 
     public void sendConnectionLostInfo(String gameId) {
@@ -138,11 +129,7 @@ public class GameService {
     }
 
     private List<UnknownAnswerDto> getUnknownAnswers(Character letter, Map<Category, String> answers) {
-        return answers.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().check(letter, entry.getValue()) == null)
-                .map(entry -> new UnknownAnswerDto(entry.getKey(), entry.getValue()))
-                .toList();
+        return answers.entrySet().stream().filter(entry -> entry.getKey().check(letter, entry.getValue()) == null).map(entry -> new UnknownAnswerDto(entry.getKey(), entry.getValue())).toList();
     }
 
     private void nextRound(Game game) {
@@ -187,6 +174,12 @@ public class GameService {
             return;
         }
 
+        if (game.getRoundNumber() == game.getRoundsCount()) {
+            game.setStatus(GameStatus.FINISHED);
+            simpMessagingTemplate.convertAndSend("/game-over/" + game.getId(), true);
+            return;
+        }
+
         game.setLetter(gameLogicService.drawLetter(game.getUsedLetters()));
         simpMessagingTemplate.convertAndSend("/next-round/" + game.getId(), true);
     }
@@ -220,17 +213,36 @@ public class GameService {
         Game game = gameLogicService.findById(gameId);
 
         boolean roundSummary = gameLogicService.confirmUnknownAnswers(game, unknownAnswers, playerName);
-        if (roundSummary)
-            nextRound(game);
+        if (roundSummary) nextRound(game);
     }
 
     public boolean checkPlayerCompetedUnknownAnswersVerification(String name, String gameId) {
         Game game = gameLogicService.findById(gameId);
-        return game.getUnknownAnswersResult().stream()
-                .anyMatch(uar -> uar.playerName().equals(name));
+        return game.getUnknownAnswersResult().stream().anyMatch(uar -> uar.playerName().equals(name));
     }
 
     public String checkEndRoundSoonMessage(String name, GameDto game) {
         return gameLogicService.checkEndRoundSoonMessage(name, game);
+    }
+
+    public GameSummaryDto getGameSummary(String gameId) {
+        Game game = gameLogicService.findById(gameId);
+        if (game.getStatus() != GameStatus.FINISHED)
+            throw new IllegalStateException("Game " + gameId + " not finished!");
+
+        List<Player> players = game.getPlayers()
+                .stream()
+                .sorted(Comparator.comparing(Player::getPoints).reversed())
+                .toList();
+
+        List<PlayerSummaryDto> playersSummary = IntStream.range(0, players.size())
+                .boxed()
+                .map(i -> {
+                    Player p = players.get(i);
+                    return new PlayerSummaryDto(p.getName(), p.getPoints(), Place.findByNumber(i + 1));
+                }).sorted(Comparator.comparing(PlayerSummaryDto::points).reversed())
+                .toList();
+
+        return new GameSummaryDto(playersSummary);
     }
 }

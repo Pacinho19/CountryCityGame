@@ -15,6 +15,7 @@ public class GameDtoMapper {
                 .playersCount(game.getPlayersCount())
                 .currentLetter(game.getLetter())
                 .roundResults(game.getResults())
+                .roundsCount(game.getRoundsCount())
                 .build();
     }
 }
