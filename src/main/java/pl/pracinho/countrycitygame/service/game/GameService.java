@@ -159,9 +159,9 @@ public class GameService {
         return roundResultDto;
     }
 
-    public LinkedList<Player> getGamePlayers(String gameId) {
+    public List<Player> getGamePlayers(String gameId) {
         Game game = gameLogicService.findById(gameId);
-        return game.getPlayers();
+        return game.getPlayers().stream().sorted(Comparator.comparing(Player::getName)).toList();
     }
 
     public void roundReady(String gameId, String roundId, String playerName) {

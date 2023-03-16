@@ -76,7 +76,7 @@
                         <tr th:each="result : ${game.roundResults}">
                             <td>
                                 <span class="badge badge-primary" th:text="${result.letter}"
-                                    style="font-size:2rem;">A</span>
+                                    style="font-size:1rem;">A</span>
                             </td>
                             <th:block th:each="entry: ${result.categoryResultMap}">
                                 <th:block th:each="categoryResult: ${entry.value}">
@@ -85,7 +85,7 @@
                                     <td style="vertical-align: middle;">
                                         <span
                                             th:class="${categoryResult.points==15 ? 'badge badge-success' : categoryResult.points==10 ? 'badge badge-warning' : categoryResult.points==5 ? 'badge badge-secondary' : 'badge badge-danger'}"
-                                            style="font-size:1.5rem;" th:text="${categoryResult.points}"></span>
+                                            style="font-size:1rem;" th:text="${categoryResult.points}"></span>
                                     </td>
                                 </th:block>
                             </th:block>

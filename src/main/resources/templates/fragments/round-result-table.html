@@ -7,9 +7,9 @@
         <th:block th:each="player : ${gamePlayers}">
           <th style="vertical-align: middle;" colspan="2">
             <i th:if="${!#lists.contains(playersReady,player.name)}" class="bi bi-alarm"
-              style="font-size:1.5rem;color:red"></i>
+              style="font-size:1rem;color:red"></i>
             <i th:if="${#lists.contains(playersReady,player.name)}" class="bi bi-check-circle"
-              style="font-size:1.5rem;color:green"></i>
+              style="font-size:1rem;color:green"></i>
             <span th:text="${player.name}" style="margin-left:1%">Player Name</span>
           </th>
         </th:block>
@@ -23,7 +23,7 @@
           <td style="vertical-align: middle;">
             <span
               th:class="${categoryResult.points==15 ? 'badge badge-success' : categoryResult.points==10 ? 'badge badge-warning' : categoryResult.points==5 ? 'badge badge-secondary' : 'badge badge-danger'}"
-              style="font-size:1.5rem;" th:text="${categoryResult.points}"></span>
+              style="font-size:1rem;" th:text="${categoryResult.points}"></span>
           </td>
         </th:block>
       </tr>
