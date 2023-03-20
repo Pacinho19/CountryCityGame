@@ -17,7 +17,7 @@
             </div>
 
             <div style="text-align:center">
-                <span class="badge badge-primary" th:text="${game.currentLetter}" style="font-size:8rem;">A</span>
+                <span class="badge badge-primary" th:text="${game.currentLetter}" style="font-size:4rem;">A</span>
             </div>
 
             <hr class="hr hr-blurry" />
@@ -52,48 +52,8 @@
 
             <hr class="hr hr-blurry" />
 
+            <div th:replace="fragments/game-result-table :: gameResultTable" />
 
-            <div style="margin-top:1%;text-align:center" class="table-responsive">
-
-                <table style="margin-top:1%;" th:if="${game.roundResults!=null}" class="table table-bordered">
-                    <thead class="">
-                        <tr>
-                            <th rowspan="2">Letter</th>
-                            <th th:each="category : ${categories}" th:text="${category}"
-                                th:colspan="${game.playersCount*2}">
-                                Category
-                            </th>
-                        </tr>
-                        <tr>
-                            <th:block th:each="category : ${categories}">
-                                <th th:each="playerName : ${game.players}" th:text="${playerName}" colspan="2">
-                                    PlayerName
-                                </th>
-                            </th:block>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="result : ${game.roundResults}">
-                            <td>
-                                <span class="badge badge-primary" th:text="${result.letter}"
-                                    style="font-size:1rem;">A</span>
-                            </td>
-                            <th:block th:each="entry: ${result.categoryResultMap}">
-                                <th:block th:each="categoryResult: ${entry.value}">
-                                    <td style="vertical-align: middle;"><span th:text="${categoryResult.answer}">
-                                        </span></td>
-                                    <td style="vertical-align: middle;">
-                                        <span
-                                            th:class="${categoryResult.points==15 ? 'badge badge-success' : categoryResult.points==10 ? 'badge badge-warning' : categoryResult.points==5 ? 'badge badge-secondary' : 'badge badge-danger'}"
-                                            style="font-size:1rem;" th:text="${categoryResult.points}"></span>
-                                    </td>
-                                </th:block>
-                            </th:block>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
         </div>
         <div class="col-md-1">
         </div>

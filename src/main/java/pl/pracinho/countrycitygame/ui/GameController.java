@@ -188,9 +188,12 @@ public class GameController {
 
     @GetMapping(EndpointsConfig.UI_GAME_OVER)
     public String gameOver(Model model,
+                           Authentication authentication,
                            @PathVariable(value = "gameId") String gameId) {
 
         try {
+            model.addAttribute("game", gameService.findDtoById(gameId, authentication.getName()));
+            model.addAttribute("categories", Category.getCategoriesNames());
             model.addAttribute("gameSummary", gameService.getGameSummary(gameId));
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

@@ -182,7 +182,7 @@ public class GameService {
             return;
         }
 
-        if (game.getRoundNumber() == game.getRoundsCount()) {
+        if (game.getRoundNumber() > game.getRoundsCount()) {
             game.setStatus(GameStatus.FINISHED);
             simpMessagingTemplate.convertAndSend("/game-over/" + game.getId(), true);
             return;
